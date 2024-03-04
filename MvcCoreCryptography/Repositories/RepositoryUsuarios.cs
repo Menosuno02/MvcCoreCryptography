@@ -20,7 +20,18 @@ namespace MvcCoreCryptography.Repositories
             return await this.context.Usuarios.MaxAsync(x => x.IdUsuario) + 1;
         }
 
-        public async Task RegisterUsuarioAsync
+        public async Task<Usuario> ActivateUserAsync(string token)
+        {
+            Usuario usuario = await this.context.Usuarios
+                .Where(u => u.TokenMail == token)
+                .FirstOrDefaultAsync();
+            usuario.Activo = true;
+            usuario.TokenMail = "";
+            await this.context.SaveChangesAsync();
+            return usuario;
+        }
+
+        public async Task<Usuario> RegisterUsuarioAsync
             (string nombre, string email, string password, string imagen)
         {
             Usuario user = new Usuario();
@@ -29,12 +40,15 @@ namespace MvcCoreCryptography.Repositories
             user.Email = email;
             user.Imagen = imagen;
             // Cada usuario tendrá un SALT distinto
-            user.Salt = HelperCryptography.GenerateSalt();
+            user.Salt = HelperTools.GenerateSalt();
             // Guardamos el password en byte[]
             user.Password = HelperCryptography.EncryptPassword
                 (password, user.Salt);
+            user.Activo = false;
+            user.TokenMail = HelperTools.GenerateTokenMail();
             this.context.Usuarios.Add(user);
             await this.context.SaveChangesAsync();
+            return user;
         }
 
         // Necesitamos un método para validar al usuario
@@ -58,7 +72,7 @@ namespace MvcCoreCryptography.Repositories
                 byte[] temp =
                     HelperCryptography.EncryptPassword(password, salt);
                 byte[] passUser = user.Password;
-                bool response = HelperCryptography.CompareArrays(temp, passUser);
+                bool response = HelperTools.CompareArrays(temp, passUser);
                 if (response == true)
                     return user;
                 else

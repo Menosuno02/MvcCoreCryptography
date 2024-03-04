@@ -21,5 +21,9 @@ namespace MvcCoreCryptography.Models
         public string Salt { get; set; }
         [Column("IMAGEN")]
         public string Imagen { get; set; }
+        [Column("ACTIVO")]
+        public bool Activo { get; set; }
+        [Column("TOKENMAIL")]
+        public string TokenMail { get; set; }
     }
 }

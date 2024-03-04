@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MvcCoreCryptography.Data;
+using MvcCoreCryptography.Helpers;
 using MvcCoreCryptography.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,9 @@ string connectionString = builder.Configuration.GetConnectionString("SqlServer")
 builder.Services.AddTransient<RepositoryUsuarios>();
 builder.Services.AddDbContext<UsuariosContext>
     (options => options.UseSqlServer(connectionString));
+
+builder.Services.AddTransient<HelperMails>();
+builder.Services.AddTransient<HelperPathProvider>();
 
 var app = builder.Build();
 
