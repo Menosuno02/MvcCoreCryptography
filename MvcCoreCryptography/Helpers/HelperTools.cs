@@ -9,6 +9,7 @@
             for (int i = 1; i <= 20; i++)
             {
                 int aleatorio = random.Next(65, 122);
+                if (aleatorio == 95) aleatorio++;
                 token += Convert.ToChar(aleatorio); // letra
             }
             return token;

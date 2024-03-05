@@ -33,7 +33,7 @@ namespace MvcCoreCryptography.Controllers
         {
             Usuario user = await this.repo.RegisterUsuarioAsync(nombre, email, password, imagen);
             string serverUrl = pathProvider.MapUrlPath();
-            serverUrl = serverUrl + "/Usuarios/ActivateUser/" + user.TokenMail;
+            serverUrl = serverUrl + "/Usuarios/ActivateUser/?token=" + user.TokenMail;
             string mensaje = "<h3>Usuario registrado</h3>";
             mensaje += "<p>Debe activar su cuenta pulsando el siguiente enlace</p>";
             mensaje += "<p>" + serverUrl + "</p>";
